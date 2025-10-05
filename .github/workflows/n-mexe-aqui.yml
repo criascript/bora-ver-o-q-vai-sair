@@ -1,21 +1,31 @@
-name: Auto Merge PRs
-
+name: automerge
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
-
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
+  pull_request_review:
+    types:
+      - submitted
+  check_suite:
+    types:
+      - completed
+  status: {}
 jobs:
-  auto-merge:
+  automerge:
     runs-on: ubuntu-latest
-    permissions: write-all
-
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Merge PR automatically
+      - id: automerge
+        name: automerge
+        uses: "pascalgn/automerge-action@v0.16.4"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          gh pr merge $PR_NUMBER --merge --admin --delete-branch
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
