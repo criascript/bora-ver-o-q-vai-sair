@@ -1,41 +1,21 @@
-name: automerge
-on:
-  pull_request:
-    types:
-      - labeled
-      - unlabeled
-      - synchronize
-      - opened
-      - edited
-      - ready_for_review
-      - reopened
-      - unlocked
-  pull_request_review:
-    types:
-      - submitted
-  check_suite:
-    types:
-      - completed
-  status: {}
+name: Auto approve
+
+on: pull_request_target
+
 jobs:
-  add_label:
+  auto-approve:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
     steps:
-      - name: Add automerge label
-        uses: actions-ecosystem/action-add-labels@v1
+      - uses: hmarr/auto-approve-action@v4
         with:
-          labels: automerge
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-  automerge:
+          github-token: ${{ secrets.PAT_TOKEN }}
+
+  auto-merge:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
-      - id: automerge
-        name: automerge
-        uses: "pascalgn/automerge-action@v0.16.4"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Merge
+        uses: KeisukeYamashita/auto-pull-request-merge@v1
+        with:
+          intervalSeconds: 10
+          timeoutSeconds: 30
+          token: ${{ secrets.PAT_TOKEN }}
