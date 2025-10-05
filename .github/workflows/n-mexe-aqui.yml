@@ -27,6 +27,7 @@ jobs:
         uses: actions-ecosystem/action-add-labels@v1
         with:
           labels: automerge
+          github_token: ${{ secrets.GITHUB_TOKEN }}
   automerge:
     runs-on: ubuntu-latest
     permissions:
